@@ -28,10 +28,14 @@ app.disable("x-powered-by");
 // When this server also hosts the website, give browsers a strict but working policy:
 // our own scripts/styles/fonts, https or data: images (task photos), and the one external
 // service the app calls (OpenStreetMap, to turn GPS into an address).
+// Referrer-Policy: send only the site's address (no page path) to other sites. OpenStreetMap's
+// map tiles and address search reject requests that don't say which site they come from, so
+// helmet's default of "no-referrer" would break the location map.
 app.use(
   helmet(
     env.serveFrontend
       ? {
+          referrerPolicy: { policy: "strict-origin-when-cross-origin" },
           contentSecurityPolicy: {
             useDefaults: false,
             directives: {
@@ -51,7 +55,7 @@ app.use(
             },
           },
         }
-      : undefined,
+      : { referrerPolicy: { policy: "strict-origin-when-cross-origin" } },
   ),
 );
 // CORS: the site's OWN origin is always allowed (browsers send an Origin header even for the

@@ -103,6 +103,8 @@ export default function LocationPicker({ value, onChange, placeholder = "Search 
     const m = L.map(mapEl.current, { center: DEFAULT_CENTER, zoom: 13, zoomControl: true, attributionControl: true });
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
+      // OpenStreetMap's tile servers require the site's address (Referer); see the server's Referrer-Policy.
+      referrerPolicy: "strict-origin-when-cross-origin",
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(m);
     m.on("click", (e: L.LeafletMouseEvent) => placePin(e.latlng.lat, e.latlng.lng));

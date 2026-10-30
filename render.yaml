@@ -20,15 +20,14 @@ services:
         sync: false # MongoDB Atlas connection string
       - key: JWT_SECRET
         generateValue: true # Render generates a strong random value
-      # Phone OTP: the server REFUSES to start in production with SMS_PROVIDER=console.
+      # Phone OTP, DEMO MODE: no SMS is sent; the code is shown on screen, so a phone number
+      # is NOT really verified. To send real texts later, set SMS_PROVIDER=twilio (or msg91),
+      # add the TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_FROM values in the dashboard,
+      # and remove ALLOW_DEMO_SMS. See DEPLOY.md.
       - key: SMS_PROVIDER
-        value: twilio # or msg91
-      - key: TWILIO_ACCOUNT_SID
-        sync: false
-      - key: TWILIO_AUTH_TOKEN
-        sync: false
-      - key: TWILIO_FROM
-        sync: false # your Twilio number, e.g. +1415XXXXXXX
+        value: console
+      - key: ALLOW_DEMO_SMS
+        value: "true"
       # Aadhaar is a DEMO (simulated) check: it verifies nothing. Badges say "Demo ID check".
       - key: KYC_PROVIDER
         value: sandbox

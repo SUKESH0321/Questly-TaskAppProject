@@ -179,9 +179,9 @@ export default function VerifyPhone() {
 
       {devCode && (
         <div className="mt-5 rounded-xl border border-dashed border-sun bg-sun/15 p-3 text-sm">
-          <p className="font-bold">Development mode</p>
+          <p className="font-bold">Demo mode</p>
           <p className="text-muted-foreground">
-            No SMS provider is connected, so no text was sent. Your code is{" "}
+            Text messages aren't connected in this demo, so no SMS was sent and your number isn't truly verified. Your code is{" "}
             <button type="button" className="font-mono text-base font-extrabold text-foreground underline" onClick={() => onCodeChange(devCode)}>
               {devCode}
             </button>{" "}

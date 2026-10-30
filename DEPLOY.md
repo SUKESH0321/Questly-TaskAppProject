@@ -28,9 +28,13 @@ Phone browser  -->  https://questly.onrender.com/QuestlyTaskApp/   (website + /a
 
 That URL is your whole app. There is no second site to deploy and no CORS setting to touch.
 
-### SMS (required: phone verification at sign-up)
+### SMS: demo mode (the default in `render.yaml`)
 
-The server **refuses to start in production** with the dev-only code printer, so Twilio (or MSG91) keys are needed.
+`SMS_PROVIDER=console` with `ALLOW_DEMO_SMS=true` sends **no text**. The verification screen shows the code instead, labelled "Demo mode". This means a phone number is **not really verified**, so use it for demos and testing only, not for real users. You need no Twilio account.
+
+### SMS: real texts (when you're ready)
+
+The server refuses to start in production with the on-screen code unless `ALLOW_DEMO_SMS=true`. To send real texts, set `SMS_PROVIDER` to `twilio` or `msg91`, add the keys below in the Render dashboard, and delete `ALLOW_DEMO_SMS`.
 
 - **Twilio:** set `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM`. Trial accounts can only text numbers you've verified in the Twilio console. Test locally first: `cd backend && npm run sms:test -- +91XXXXXXXXXX`.
 - **MSG91 (India):** set `SMS_PROVIDER=msg91`, `MSG91_AUTH_KEY`, `MSG91_TEMPLATE_ID`. Indian SMS needs a DLT-registered sender ID and an approved OTP template.

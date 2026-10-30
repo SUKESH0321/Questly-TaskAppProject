@@ -46,8 +46,12 @@ function resolveSms() {
   if (!["console", "twilio", "msg91"].includes(provider)) {
     throw new Error("SMS_PROVIDER must be console, twilio or msg91.");
   }
-  if (isProduction && provider === "console") {
-    throw new Error("SMS_PROVIDER=console only prints codes to the log. Set SMS_PROVIDER to twilio or msg91 in production.");
+  // The console provider shows the code on screen instead of texting it, so anyone could
+  // "verify" any number. In production it is allowed ONLY as an explicit, labelled demo.
+  if (isProduction && provider === "console" && process.env.ALLOW_DEMO_SMS !== "true") {
+    throw new Error(
+      "SMS_PROVIDER=console shows codes on screen instead of texting them. Use twilio or msg91 in production, or set ALLOW_DEMO_SMS=true to run it as a demo.",
+    );
   }
   const twilio = {
     accountSid: process.env.TWILIO_ACCOUNT_SID || "",

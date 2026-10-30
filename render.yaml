@@ -1,0 +1,37 @@
+# Render Blueprint: ONE service hosts the website and the API.
+# Create via Dashboard > New > Blueprint and pick this repo.
+# Values marked sync:false are typed into the Render dashboard, never committed.
+services:
+  - type: web
+    name: questly
+    runtime: node
+    plan: free # see DEPLOY.md: free instances sleep, which pauses the task-timer job
+    # Builds the website (repo root -> dist/) and the API (backend/ -> backend/dist/).
+    # --include=dev because the build tools (TypeScript, Vite) are dev dependencies.
+    buildCommand: npm install --include=dev --no-audit --no-fund && npm run build && npm --prefix backend install --include=dev --no-audit --no-fund && npm --prefix backend run build
+    startCommand: node backend/dist/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: MONGODB_URI
+        sync: false # MongoDB Atlas connection string
+      - key: JWT_SECRET
+        generateValue: true # Render generates a strong random value
+      # Phone OTP: the server REFUSES to start in production with SMS_PROVIDER=console.
+      - key: SMS_PROVIDER
+        value: twilio # or msg91
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_FROM
+        sync: false # your Twilio number, e.g. +1415XXXXXXX
+      # Aadhaar is a DEMO (simulated) check: it verifies nothing. Badges say "Demo ID check".
+      - key: KYC_PROVIDER
+        value: sandbox
+      - key: ALLOW_DEMO_KYC
+        value: "true"
+      # No CORS_ORIGIN needed: the site and API share one address.

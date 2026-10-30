@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Questly</string>
+    <string name="title_activity_main">Questly</string>
+    <string name="package_name">com.questly.app</string>
+    <string name="custom_url_scheme">com.questly.app</string>
+</resources>

@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Questly design tokens: "warm, confident, local".
+  Warm paper surfaces, ink text, one bold coral, green reserved for money/success.
+  Values are HSL triplets so Tailwind can add opacity (bg-primary/10).
+*/
+@layer base {
+  :root {
+    --background: 40 38% 96%;
+    --foreground: 24 22% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 24 22% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 24 22% 10%;
+
+    /* Coral. White on this passes WCAG AA for normal text. */
+    --primary: 11 84% 47%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 36 30% 91%;
+    --secondary-foreground: 24 22% 14%;
+
+    --muted: 36 28% 93%;
+    --muted-foreground: 24 10% 38%;
+
+    /* Fresh green: earnings, success, "done". */
+    --accent: 152 62% 28%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Sunny highlight for badges and small delights. */
+    --sun: 42 96% 56%;
+    --sun-foreground: 24 22% 10%;
+
+    --destructive: 0 72% 46%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 32 22% 86%;
+    --input: 32 22% 82%;
+    --ring: 11 84% 47%;
+
+    --radius: 1rem;
+
+    --shadow-color: 24 30% 12%;
+  }
+
+  .dark {
+    --background: 24 16% 7%;
+    --foreground: 36 24% 94%;
+
+    --card: 24 13% 11%;
+    --card-foreground: 36 24% 94%;
+
+    --popover: 24 13% 11%;
+    --popover-foreground: 36 24% 94%;
+
+    --primary: 11 88% 60%;
+    --primary-foreground: 24 30% 8%;
+
+    --secondary: 24 10% 16%;
+    --secondary-foreground: 36 24% 94%;
+
+    --muted: 24 10% 15%;
+    --muted-foreground: 30 10% 66%;
+
+    --accent: 152 56% 52%;
+    --accent-foreground: 24 30% 8%;
+
+    --sun: 42 92% 58%;
+    --sun-foreground: 24 30% 8%;
+
+    --destructive: 0 72% 58%;
+    --destructive-foreground: 24 30% 8%;
+
+    --border: 24 9% 20%;
+    --input: 24 9% 24%;
+    --ring: 11 88% 60%;
+
+    --shadow-color: 0 0% 0%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv11", "ss01";
+    overscroll-behavior-y: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display tracking-tight;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.25);
+  }
+}
+
+@layer components {
+  /* Die-cut ticket: semicircle notches on both edges at the tear line above the price stub. */
+  .ticket {
+    --notch: 9px;
+    --stub: 76px;
+    -webkit-mask:
+      radial-gradient(circle var(--notch) at 0 calc(100% - var(--stub)), transparent 96%, #000) left / 51% 100% no-repeat,
+      radial-gradient(circle var(--notch) at 100% calc(100% - var(--stub)), transparent 96%, #000) right / 51% 100% no-repeat;
+    mask:
+      radial-gradient(circle var(--notch) at 0 calc(100% - var(--stub)), transparent 96%, #000) left / 51% 100% no-repeat,
+      radial-gradient(circle var(--notch) at 100% calc(100% - var(--stub)), transparent 96%, #000) right / 51% 100% no-repeat;
+  }
+  /* Small uppercase mono label: meta text, section kickers, IDs. */
+  .label-mono {
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.09em] text-muted-foreground;
+  }
+}
+
+@layer utilities {
+  /* Respect the notch / gesture bar on phones (Android WebView, iOS). */
+  .pb-safe {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* Printed-paper panel: flat tint with a fine dot grid (no gradient blobs). */
+  .bg-hero {
+    background-color: hsl(var(--secondary));
+    background-image: radial-gradient(hsl(var(--foreground) / 0.09) 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+  .bg-dots {
+    background-image: radial-gradient(hsl(var(--foreground) / 0.06) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  /* Dashed perforation used on ticket-style cards. */
+  .tear {
+    border-top: 2px dashed hsl(var(--border));
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---- Quest map background ---- */
+/* Pin: pops up, settles, bobs up and down, then sinks away. */
+@keyframes quest-pin {
+  0%   { opacity: 0; transform: translateY(26px) scale(0.4); }
+  9%   { opacity: 1; transform: translateY(-28px) scale(1.1); }
+  15%  { opacity: 1; transform: translateY(0) scale(1); }
+  28%  { transform: translateY(-10px); }
+  40%  { transform: translateY(0); }
+  54%  { transform: translateY(-10px); }
+  66%  { transform: translateY(0); }
+  82%  { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(20px) scale(0.6); }
+}
+.quest-pin { animation: quest-pin 7.2s ease-in-out forwards; opacity: 0; }
+/* Ripple lying flat on the map: a circle squashed by the tilt (cos 58deg = 0.53). */
+@keyframes quest-ripple {
+  0%   { transform: scaleY(0.53) scale(0.15); opacity: 0; }
+  12%  { opacity: 0.7; }
+  60%  { transform: scaleY(0.53) scale(1.6); opacity: 0; }
+  100% { transform: scaleY(0.53) scale(1.6); opacity: 0; }
+}
+.quest-ripple { animation: quest-ripple 3.6s ease-out 2 forwards; opacity: 0; }
+
+/* Honour "reduce motion": kill decorative animation, keep state changes instant. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Questly coin: a stack of thin slices gives it real thickness; it flips every few seconds. */
+@keyframes coin-flip {
+  0% { transform: rotateX(-14deg) rotateY(0deg); }
+  18% { transform: rotateX(-14deg) rotateY(720deg); }
+  100% { transform: rotateX(-14deg) rotateY(720deg); }
+}
+.coin-3d {
+  transform-style: preserve-3d;
+  transform: rotateX(-14deg);
+  animation: coin-flip 5s cubic-bezier(0.45, 0.05, 0.25, 1) infinite;
+}
+.coin-3d img {
+  image-rendering: pixelated;
+}
+.coin-wrap:hover .coin-3d {
+  animation-duration: 1.6s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .coin-3d { animation: none; }
+}
+
+/* Location map: coin pin, and a dark-mode tint for the light OpenStreetMap tiles. */
+.questly-pin img {
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 3px 3px rgb(0 0 0 / 0.4));
+  cursor: grab;
+}
+.questly-map { z-index: 0; }
+.dark .questly-map .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9);
+}

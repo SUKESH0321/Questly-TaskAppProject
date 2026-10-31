@@ -91,6 +91,13 @@ function resolveKyc() {
  */
 const serveFrontend = process.env.SERVE_FRONTEND ? process.env.SERVE_FRONTEND === "true" : isProduction;
 
+/** Company admin login (username + password). Override both in production. */
+const admin = {
+  username: (process.env.ADMIN_USERNAME || "admin01").trim(),
+  password: process.env.ADMIN_PASSWORD || "admin123",
+  isDefaultPassword: !process.env.ADMIN_PASSWORD,
+};
+
 export const env = {
   isProduction,
   port: Number(process.env.PORT) || 3001,
@@ -102,6 +109,7 @@ export const env = {
     ? process.env.SEED_DEMO_DATA === "true"
     : !isProduction,
   serveFrontend,
+  admin,
   sms: resolveSms(),
   kyc: resolveKyc(),
 };

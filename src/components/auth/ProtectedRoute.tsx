@@ -8,6 +8,8 @@ interface ProtectedRouteProps {
   allowNoRole?: boolean;
   /** Allow users whose mobile number isn't verified yet (the verify-phone screen). */
   allowUnverifiedPhone?: boolean;
+  /** Only the company admin account may open this page. */
+  adminOnly?: boolean;
 }
 
 function SessionSpinner() {
@@ -25,7 +27,7 @@ function SessionSpinner() {
  * Requires a signed-in user. Order of the sign-up journey:
  * verify mobile number -> choose role -> app.
  */
-export function ProtectedRoute({ children, allowNoRole = false, allowUnverifiedPhone = false }: ProtectedRouteProps) {
+export function ProtectedRoute({ children, allowNoRole = false, allowUnverifiedPhone = false, adminOnly = false }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading, user } = useAuthStore();
   const location = useLocation();
 
@@ -34,6 +36,11 @@ export function ProtectedRoute({ children, allowNoRole = false, allowUnverifiedP
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
+
+  // The admin account only ever sees the admin page, and nobody else may open it.
+  if (user?.role === "admin" && !adminOnly) return <Navigate to="/admin" replace />;
+  if (adminOnly && user?.role !== "admin") return <Navigate to="/home" replace />;
+  if (adminOnly) return <>{children}</>;
 
   if (!allowUnverifiedPhone && user && !user.phoneVerified) {
     return <Navigate to="/verify-phone" replace />;
@@ -53,6 +60,7 @@ export function GuestRoute({ children }: { children: React.ReactNode }) {
   if (isLoading) return <SessionSpinner />;
 
   if (isAuthenticated) {
+    if (user?.role === "admin") return <Navigate to="/admin" replace />;
     if (user && !user.phoneVerified) return <Navigate to="/verify-phone" replace />;
     return <Navigate to={user?.role === null ? "/role-selection" : "/home"} replace />;
   }

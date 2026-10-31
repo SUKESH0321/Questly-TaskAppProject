@@ -662,6 +662,9 @@ export default function TaskDetails() {
                       {payment?.status === "disputed" &&
                         "Payment is under dispute."}
                     </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Questly keeps a 10% fee. The tasker receives ₹{Math.round(payTotal * 0.9 * 100) / 100} of ₹{payTotal}.
+                    </p>
                   </div>
 
                   {!payment && safeTask.workerId && (

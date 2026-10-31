@@ -4,7 +4,7 @@ import { getApiError } from "@/lib/errors";
 import { useTaskStore } from "@/stores/taskStore";
 import { usePaymentStore } from "@/stores/paymentStore";
 
-export type UserRole = "customer" | "tasker" | "both" | null;
+export type UserRole = "customer" | "tasker" | "both" | "admin" | null;
 
 export interface User {
   id: string;

@@ -16,6 +16,7 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { useAuthStore } from "@/stores/authStore";
 import { useTaskStore, type Task } from "@/stores/taskStore";
 import { usePaymentStore } from "@/stores/paymentStore";
+import { payoutOf } from "@/types/payment";
 import { CATEGORIES, categoryDot } from "@/lib/categories";
 
 function greeting() {
@@ -82,8 +83,8 @@ export default function Home() {
       .filter((p) => p.status === "released" && p.payeeId === user?.id)
       .sort((a, b) => Date.parse(a.releasedAt ?? a.createdAt) - Date.parse(b.releasedAt ?? b.createdAt));
     let running = 0;
-    const series = released.slice(-8).map((p) => (running += p.amount));
-    const earned = released.reduce((sum, p) => sum + p.amount, 0);
+    const series = released.slice(-8).map((p) => (running += payoutOf(p)));
+    const earned = released.reduce((sum, p) => sum + payoutOf(p), 0);
     const active =
       myPostedTasks.filter((t) => t.status !== "completed" && t.status !== "expired").length +
       myWorkedTasks.filter((t) => t.status !== "completed").length;

@@ -120,7 +120,7 @@ export async function login(req: Request, res: Response) {
   const password = str(req.body?.password);
 
   if (!email || !password) {
-    res.status(400).json({ error: "Email and password are required." });
+    res.status(400).json({ error: "Email (or username) and password are required." });
     return;
   }
 
@@ -154,6 +154,11 @@ export async function updateMe(req: Request, res: Response) {
   }
 
   const { name, phone, location, role, avatar, portfolioImages } = req.body ?? {};
+
+  if (user.role === "admin" && role !== undefined) {
+    res.status(403).json({ error: "The admin role can't be changed." });
+    return;
+  }
 
   if (name !== undefined) {
     const v = str(name)?.trim();

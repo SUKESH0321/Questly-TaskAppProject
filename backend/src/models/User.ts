@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcryptjs";
 
-export type UserRole = "customer" | "tasker" | "both" | null;
+export type UserRole = "customer" | "tasker" | "both" | "admin" | null;
 export type KycStatus = "none" | "pending" | "verified" | "rejected";
 
 export interface IUser extends Document {
@@ -45,7 +45,7 @@ const UserSchema = new Schema<IUser>(
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, minlength: 6 },
-    role: { type: String, enum: ["customer", "tasker", "both", null], default: null },
+    role: { type: String, enum: ["customer", "tasker", "both", "admin", null], default: null },
     phone: { type: String, default: "" },
     location: { type: String, default: "" },
     avatar: { type: String, default: "" },

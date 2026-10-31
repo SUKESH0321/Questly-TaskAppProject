@@ -52,6 +52,15 @@ export function requirePhoneVerified(req: Request, res: Response, next: NextFunc
   next();
 }
 
+/** Only the company admin account may continue. Use after authMiddleware. */
+export function requireAdmin(req: Request, res: Response, next: NextFunction) {
+  if (req.authUser?.role !== "admin") {
+    res.status(403).json({ error: "Admin access only." });
+    return;
+  }
+  next();
+}
+
 /**
  * Generate a JWT token for a user.
  */

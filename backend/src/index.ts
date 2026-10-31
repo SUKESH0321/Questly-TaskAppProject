@@ -15,6 +15,8 @@ import messageRoutes from "./routes/messages.js";
 import notificationRoutes from "./routes/notifications.js";
 import userRoutes from "./routes/users.js";
 import kycRoutes from "./routes/kyc.js";
+import adminRoutes from "./routes/admin.js";
+import { ensureAdminAccount } from "./config/admin.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import { expireDueTasks } from "./utils/expiry.js";
 
@@ -101,6 +103,7 @@ app.use("/api/auth/phone", authLimiter);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/kyc", kycRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/conversations", messageRoutes);
@@ -164,6 +167,7 @@ process.on("unhandledRejection", (reason) => {
 // ---------- Start ----------
 async function start() {
   await connectDB();
+  await ensureAdminAccount();
   if (env.seedDemoData) {
     await seedDatabase();
   }

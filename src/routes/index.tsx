@@ -19,6 +19,7 @@ import PublicProfilePage from "@/pages/profile/PublicProfilePage";
 import SettingsPage from "@/pages/settings/SettingsPage";
 import MessagesPage from "@/pages/messages/MessagesPage";
 import NotificationsPage from "@/pages/notifications/NotificationsPage";
+import AdminPage from "@/pages/admin/AdminPage";
 import NotFound from "@/pages/NotFound";
 import RouteError from "@/pages/RouteError";
 
@@ -98,6 +99,15 @@ export const router = createBrowserRouter(
       { path: "/messages", element: <MessagesPage /> },
       { path: "/notifications", element: <NotificationsPage /> },
     ],
+  },
+  {
+    path: "/admin",
+    element: (
+      <ProtectedRoute adminOnly>
+        <AdminPage />
+      </ProtectedRoute>
+    ),
+    errorElement: <RouteError />,
   },
   {
     path: "*",

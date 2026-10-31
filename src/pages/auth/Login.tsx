@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.string().trim().min(2, { message: "Enter your email or username" }),
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters" }),
@@ -37,7 +37,7 @@ export default function Login() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       await withScreen("Getting things ready", () => login(values.email, values.password), 1500);
-      navigate("/home");
+      navigate(useAuthStore.getState().user?.role === "admin" ? "/admin" : "/home");
     } catch {
       // Error is already stored in the auth store.
     }
@@ -59,9 +59,9 @@ export default function Login() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Email or username</FormLabel>
                 <FormControl>
-                  <Input placeholder="you@example.com" {...field} />
+                  <Input placeholder="you@example.com" autoCapitalize="none" autoCorrect="off" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

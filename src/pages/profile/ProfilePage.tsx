@@ -16,6 +16,7 @@ import { VerifiedBadges } from "@/components/shared/VerifiedBadges";
 import { useAuthStore } from "@/stores/authStore";
 import { useTaskStore, type Task } from "@/stores/taskStore";
 import { usePaymentStore } from "@/stores/paymentStore";
+import { payoutOf } from "@/types/payment";
 import { readImageAsDataUrl } from "@/lib/imageUtils";
 
 type TabId = "posted" | "working" | "finished";
@@ -103,8 +104,8 @@ export default function ProfilePage() {
       .sort((a, b) => Date.parse(a.releasedAt ?? a.createdAt) - Date.parse(b.releasedAt ?? b.createdAt));
     let running = 0;
     return {
-      earned: released.reduce((s, p) => s + p.amount, 0),
-      series: released.slice(-8).map((p) => (running += p.amount)),
+      earned: released.reduce((s, p) => s + payoutOf(p), 0),
+      series: released.slice(-8).map((p) => (running += payoutOf(p))),
     };
   }, [payments, user?.id]);
 

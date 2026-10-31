@@ -3,6 +3,7 @@ import { Payment } from "../models/Payment.js";
 import { Task } from "../models/Task.js";
 import { isValidId } from "../utils/http.js";
 import { notify } from "../utils/notify.js";
+import { COMMISSION_RATE, splitPayment } from "../utils/commission.js";
 
 function toJson(p: { toObject?: () => any } | Record<string, any>) {
   const o = typeof (p as any).toObject === "function" ? (p as any).toObject() : p;
@@ -98,10 +99,13 @@ export async function releasePayment(req: Request, res: Response) {
     return;
   }
 
+  // Questly keeps 10% of every completed task; the tasker receives the rest.
+  const { commission, payout } = splitPayment(payment.amount);
+
   // Atomic transition: only one request can move held -> released.
   const released = await Payment.findOneAndUpdate(
     { _id: payment._id, status: "held" },
-    { $set: { status: "released", releasedAt: new Date() } },
+    { $set: { status: "released", releasedAt: new Date(), commission, payout } },
     { new: true },
   );
   if (!released) {
@@ -116,7 +120,7 @@ export async function releasePayment(req: Request, res: Response) {
     released.payeeId,
     "payment",
     "Payment released",
-    `₹${released.amount} for "${doneTask?.title ?? "your task"}" has been released to you.`,
+    `₹${payout} for "${doneTask?.title ?? "your task"}" has been released to you (₹${released.amount} minus the ${Math.round(COMMISSION_RATE * 100)}% Questly fee).`,
     `/tasks/${released.taskId}`,
   );
 
